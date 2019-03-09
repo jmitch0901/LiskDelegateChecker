@@ -23,13 +23,16 @@ for x in range(0, len(delegateNames)):
     delegatePayoutData.append(data)
 
 
-print '\nNumber of Delegates: ', len(delegateNames)
+print ('\nNumber of Delegates: '+str(len(delegateNames)))
 
 
-liskExplorerURL = 'https://explorer.lisk.io/api/getAccount?address=' + liskAddress
+liskExplorerURL = 'https://explorer.lisk.io/api'
+
+# Get current public key
+publicKey = requests.get(liskExplorerURL+'/getAccount?address='+liskAddress).json()['publicKey']
 
 # My current voted delegates
-votedDelegates = requests.get(liskExplorerURL).json()['votes']
+votedDelegates = requests.get(liskExplorerURL+'/getVotes?publicKey='+publicKey).json()['votes']
 
 myVoteSet = set()
 for x in votedDelegates:
@@ -43,14 +46,14 @@ for x in delegatePayoutData:
     else:
         myVoteSet.remove(x['name'])
 
-print '\n**********Missing Votes: \n'
+print('\n**********Missing Votes: \n')
 
 for x in missingVotes:
-    print x['name'] + '->' + x['payout']
+    print (x['name'] + '->' + x['payout'])
 
-print '\n**********Current Bad Votes: \n'
+print ('\n**********Current Bad Votes: \n')
 
 for x in myVoteSet:
     print str(x)
 
-print '\n'
+print('\n')
